@@ -13,6 +13,8 @@ from .ts_dataset import TimeSeriesDataset
 class GeneralDataset(TimeSeriesDataset):
     def __init__(self, data_path):
         self.data = read_file_by_extension(data_path)
+        
+        print("读取到通用数据:", data_path)
         self.num_tokens = None
 
     def __len__(self):
@@ -48,7 +50,15 @@ class GeneralDataset(TimeSeriesDataset):
             return False
 
 
-def read_file_by_extension(fn):
+def read_file_by_extension(fn) -> object:
+    """
+    Read data from file according to its extension.
+    Supported extensions: .json, .jsonl, .yaml, .npy, .npz, .npy.gz, .pkl, .pickle
+    
+    :param fn: file name
+    
+    :return: data read from the file
+    """
     if fn.endswith(".json"):
         with open(fn, encoding="utf-8") as file:
             data = json.load(file)

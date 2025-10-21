@@ -16,6 +16,7 @@ class TimeMoEDataset(TimeSeriesDataset):
         self.datasets = []
         self.num_tokens = None
 
+        # 获取标准化的方法
         if normalization_method is None:
             self.normalization_method = None
         elif isinstance(normalization_method, str):
@@ -31,25 +32,36 @@ class TimeMoEDataset(TimeSeriesDataset):
             self.normalization_method = normalization_method
 
         if BinaryDataset.is_valid_path(self.data_folder):
+            # 判断能否被二进制数据集读取
+            print("以二进制的形式读取数据:")
             ds = BinaryDataset(self.data_folder)
             if len(ds) > 0:
                 self.datasets.append(ds)
+                
         elif GeneralDataset.is_valid_path(self.data_folder):
+            # 直接作为通用数据集读取
+            print("以通用的形式读取数据:")
             ds = GeneralDataset(self.data_folder)
             if len(ds) > 0:
                 self.datasets.append(ds)
+                
         else:
             # walk through the data_folder
             for root, dirs, files in os.walk(self.data_folder):
+                # 遍历这个文件夹下所有的文件和子文件夹去读取数据
+                print(f"正在遍历目录: {root}")
                 for file in files:
                     fn_path = os.path.join(root, file)
                     if (
                         file != BinaryDataset.meta_file_name
                         and GeneralDataset.is_valid_path(fn_path)
                     ):
+                        # 检测通用数据集的可用性
+                        print("检测到通用数据集文件:", fn_path)
                         ds = GeneralDataset(fn_path)
                         if len(ds) > 0:
                             self.datasets.append(ds)
+                            
                 for sub_folder in dirs:
                     folder_path = os.path.join(root, sub_folder)
                     if BinaryDataset.is_valid_path(folder_path):

@@ -11,7 +11,7 @@ class BinaryDataset(TimeSeriesDataset):
     meta_file_name = "meta.json"
     bin_file_name_template = "data-{}-of-{}.bin"
 
-    def __init__(self, data_path):
+    def __init__(self, data_path) -> None:
         if not self.is_valid_path(data_path):
             raise ValueError(f"Folder {data_path} is not a valid TimeMoE dataset.")
 
